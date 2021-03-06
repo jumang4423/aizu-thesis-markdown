@@ -1,0 +1,40 @@
+name: Generate diff
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  diff:
+    runs-on: ubuntu-20.04
+    container:
+      image: plass/mdtopdf:include-fonts
+    steps:
+      - name: Check out
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Setup secret key
+        env:
+          SECRET_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "$SECRET_KEY" > secret_key
+          chmod 600 secret_key
+      - name: Fetch document class file
+        run: |
+          scripts/fetch-dc.sh ${{ secrets.STUDENT_ID }}
+          rm -f secret_key
+      - name: Replace "J*1" to "J*2"
+        run: |
+          sed -i -e "s/JT1/JT2/g" U-AizuGT.cls
+          sed -i -e "s/JY1/JY2/g" U-AizuGT.cls
+      - name: Generate diff
+        run: |
+          scripts/diff.sh thesis.tex
+      - name: Commit
+        run: |
+          git config --local user.email "github_actions@example.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "generate diff [skip ci]"
+          git push origin ${GITHUB_REF##*/}

@@ -1,0 +1,78 @@
+\documentclass[
+$if(fontsize)$
+  $fontsize$,
+$endif$
+$if(lang)$
+  $babel-lang$,
+$endif$
+$if(papersize)$
+  $papersize$paper,
+$endif$
+$if(beamer)$
+  ignorenonframetext,
+$if(handout)$
+  handout,
+$endif$
+$if(aspectratio)$
+  aspectratio=$aspectratio$,
+$endif$
+$endif$
+$for(classoption)$
+  $classoption$$sep$,
+$endfor$
+]{$documentclass$}
+
+\usepackage{pifont}
+\usepackage{cite}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{hyperref}
+
+
+% ここまで
+
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$ieicetr$endif$}
+
+$if(biblatex)$
+\usepackage[$if(biblio-style)$style=$biblio-style$,$endif$$for(biblatexoptions)$$biblatexoptions$$sep$,$endfor$]{biblatex}
+$for(bibliography)$
+\addbibresource{$bibliography$}
+$endfor$
+$endif$
+
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+
+$if(studentid)$
+\studentid{$studentid$}
+$endif$
+
+$if(supervisor)$
+\supervisor{$supervisor$}
+$endif$
+
+\begin{document}
+    \maketitle
+    $if(abstract)$
+    \begin{abstract}
+        $abstract$
+    \end{abstract}
+    $endif$
+
+    $body$
+
+    $if(bibliography)$
+    \bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
+    $endif$
+
+
+\end{document}
